@@ -74,5 +74,35 @@ def random_scale_and_crop(image, new_width, new_height,
                                
     return image_resized[:network_height, :network_width, :]
     
-def correct_bounding_boxes():
-    pass
+def correct_bounding_boxes(boxes, new_width, new_height,
+                          network_width, network_height, dx, dy, 
+                          flip, image_width, image_height):
+    temp_boxes = copy.deepcopy(boxes)
+    boxes = []
+    np.random.shuffle(temp_boxes)
+    
+    size_x = float(new_width) / image_width
+    size_y = float(new_height) / image_height
+    
+    for i in range(len(boxes)):
+        temp_boxes[i]['xmin'] = int(_constrain(0, network_width, 
+             temp_boxes[i]['xmin'] * size_x + dx))
+        temp_boxes[i]['xmax'] = int(_constrain(0, network_width, 
+             temp_boxes[i]['xmax'] * size_x + dx))
+        temp_boxes[i]['ymin'] = int(_constrain(0, network_height, 
+             temp_boxes[i]['xmin'] * size_y + dy))
+        temp_boxes[i]['ymax'] = int(_constrain(0, network_height, 
+             temp_boxes[i]['ymax'] * size_y + dy))
+        
+            
+        if temp_boxes[i]['xmax'] <= temp_boxes[i]['xmin'] or \
+        temp_boxes[i]['ymax'] <= temp_boxes[i]['xmax']:
+            continue
+        
+        if flip == True:
+            swap = temp_boxes[i]['xmin']
+            temp_boxes[i]['xmin'] = network_width - temp_boxes[i]['xmax']
+            temp_boxes[i]['xmax'] = network_width - swap
+            
+        boxes.append(temp_boxes[i])
+    return boxes
