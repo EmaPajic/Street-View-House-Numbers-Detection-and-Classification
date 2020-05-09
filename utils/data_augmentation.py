@@ -27,7 +27,7 @@ def random_flip(image, flip):
         return cv2.flip(image, 1)
     return image
 
-def random_disort_image(image, hue = 18, saturation = 1.5, exposure = 1.5):
+def random_distort_image(image, hue = 18, saturation = 1.5, exposure = 1.5):
     dhue = np.random(-hue, hue)
     dsaturation = _random_scale(saturation)
     dexposure = _random_scale(exposure)
