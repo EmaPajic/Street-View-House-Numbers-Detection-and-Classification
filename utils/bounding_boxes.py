@@ -98,3 +98,16 @@ def draw_boxes(image, boxes, labels, obj_treshold):
     
     return image
 
+def non_max_supression(boxes, nms_treshold):
+    if len(boxes) == 0:
+        return
+    number_of_classes = len(boxes[0].classes)
+    
+    for c in range(number_of_classes):
+        sorted_indices = np.argsort([-box.classes[c] for box in boxes])
+        
+        for i in range(len(sorted_indices)):
+            for j in range(i + 1, len(sorted_indices)):
+                if bbox_iou(boxes[sorted_indices[i]],
+                            boxes[sorted_indices[j]] >= nms_treshold):
+                    boxes[sorted_indices[j]].classes[c] = 0
