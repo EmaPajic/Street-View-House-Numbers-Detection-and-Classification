@@ -5,7 +5,6 @@
 """
 
 import numpy as np
-import os
 import cv2
 from colors import get_color
 
